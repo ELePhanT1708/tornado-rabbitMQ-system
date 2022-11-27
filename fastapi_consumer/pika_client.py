@@ -2,7 +2,9 @@ import pika
 from fastapi.logger import logger
 from aio_pika import connect_robust
 import json
-from api_fast import create_request
+
+import crud
+
 
 
 class PikaClient:
@@ -10,13 +12,12 @@ class PikaClient:
     def __init__(self):
         self.publish_queue_name = "test1"  # env('PUBLISH_QUEUE', 'foo_publish_queue')
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host="localhost")  # env('RABBIT_HOST', '127.0.0.1')
+            pika.ConnectionParameters(host="my-rabbitmq")  # env('RABBIT_HOST', '127.0.0.1')
         )
         self.channel = self.connection.channel()
         self.publish_queue = self.channel.queue_declare(queue=self.publish_queue_name)
         self.callback_queue = self.publish_queue.method.queue
         self.response = None
-        self.process_callable = create_request
         logger.info('Pika connection initialized')
 
     async def consume(self, loop):
@@ -36,4 +37,6 @@ class PikaClient:
         body = message.body
         print('Received message')
         if body:
-            self.process_callable(json.loads(body))
+            crud.create_request(json.loads(body))
+        else:
+            print("Body is empty ! ")

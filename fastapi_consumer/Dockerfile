@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 9999
 
-CMD ["uvicorn", "app:app", "--port", "9999", "--reload"]
+#CMD ["uvicorn", "api_fast:foo_app", "--port", "9999", "--reload"]

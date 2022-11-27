@@ -9,7 +9,7 @@ import models
 import schemas
 import crud
 from pika_client import PikaClient
-from db import SessionLocal, engine
+from db import engine
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -36,23 +36,17 @@ async def startup():
     await task
 
 
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
-@foo_app.post("/save-request/", response_model=schemas.Request)
-async def create_request(request, db: Session = Depends(get_db)):
-    db_request = crud.create_request(db, request)
-    return db_request
+
+# @foo_app.post("/save-request/", response_model=schemas.Request)
+# async def create_request(request, db: Session = Depends(get_db)):
+#     db_request = crud.create_request(db, request)
+#     return db_request
 
 
 @foo_app.get("/get-requests/", response_model=list[schemas.Request])
-def get_requests(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_requests(skip: int = 0, limit: int = 100, db: Session = Depends(crud.get_db)):
     users = crud.get_requests(db, skip=skip, limit=limit)
     return users
 

@@ -1,9 +1,21 @@
 from typing import List
 
-from sqlalchemy.orm import Session
+from fastapi import Depends
+from sqlalchemy.orm import Session, sessionmaker
 
 import models
 import schemas
+from db import SessionLocal
+
+
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 
 def get_request_by_id(db: Session, request_id: int) -> models.Request:
@@ -18,8 +30,9 @@ def get_requests(db: Session, skip: int = 0, limit: int = 100) -> List[models.Re
     return db.query(models.Request).offset(skip).limit(limit).all()
 
 
-def create_request(db: Session, item: schemas.Request):
-    db_item = models.Request(**item.dict())
+def create_request(item: schemas.Request, db: Session = SessionLocal()):
+    db_item = models.Request(**item)
+    print("Proccessing: ", item)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)

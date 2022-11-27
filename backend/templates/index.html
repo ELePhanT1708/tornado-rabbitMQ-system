@@ -6,7 +6,7 @@
   Имя :<input name="name" type="text" required><br>
   Отчество :<input name="otchestvo" type="text" required><br>
   Номер телефона :<input name="phone" type="number" required><br>
-  Обращение :<input name="question" type="text" required><br>
+  Обращение :<textarea id="question" name="question" rows="5" cols="30" required> </textarea><br>
   {% module xsrf_form_html() %}
   <input  type="submit" value="Отправить"><br>
 </form>
