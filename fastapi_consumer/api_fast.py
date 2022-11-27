@@ -1,24 +1,23 @@
 import asyncio
 
-
 from fastapi import Depends, FastAPI
 from fastapi.logger import logger
 from sqlalchemy.orm import Session
 
-import models
 import schemas
 import crud
-from pika_client import PikaClient
+import models
 from db import engine
+from pika_client import PikaClient
 
-models.Base.metadata.create_all(bind=engine)
+models.Request.metadata.create_all(bind=engine)
 
 
 class FooApp(FastAPI):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.pika_client = PikaClient()  #self.log_incoming_message
+        self.pika_client = PikaClient()  # self.log_incoming_message
 
     @classmethod
     def log_incoming_message(cls, message: dict):
@@ -36,9 +35,6 @@ async def startup():
     await task
 
 
-
-
-
 # @foo_app.post("/save-request/", response_model=schemas.Request)
 # async def create_request(request, db: Session = Depends(get_db)):
 #     db_request = crud.create_request(db, request)
@@ -54,6 +50,3 @@ def get_requests(skip: int = 0, limit: int = 100, db: Session = Depends(crud.get
 @foo_app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-
-

@@ -2,7 +2,7 @@ import pika
 from fastapi.logger import logger
 from aio_pika import connect_robust
 import json
-
+import os
 import crud
 
 
@@ -22,11 +22,11 @@ class PikaClient:
 
     async def consume(self, loop):
         """Setup message listener with the current running loop"""
-        connection = await connect_robust(host="localhost",
-                                          port=5672,
+        connection = await connect_robust(host=os.getenv("HOST_FROM"),
+                                          port=os.getenv("PORT_FROM"),
                                           loop=loop)
         channel = await connection.channel()
-        queue = await channel.declare_queue("test1")
+        queue = await channel.declare_queue(os.getenv("QUEUE_NAME"))
         await queue.consume(self.process_incoming_message, no_ack=False)
         print('Established pika async listener')
         return connection

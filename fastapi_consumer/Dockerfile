@@ -10,6 +10,6 @@ RUN pip install -r requirements_fast_api.txt
 
 COPY . .
 
-EXPOSE 9999
+EXPOSE 8001
 
-#CMD ["uvicorn", "api_fast:foo_app", "--port", "9999", "--reload"]
+CMD ["uvicorn", "api_fast:foo_app", "--port", "8001", "--reload"]

@@ -6,6 +6,9 @@ services:
     build: ./backend/
     ports:
       - "81:81"
+    environment:
+      - QUEUE_NAME=test1
+      - HOST_TO=my-rabbitmq
     restart: always
     depends_on:
         - my-rabbitmq
@@ -13,33 +16,32 @@ services:
   my-rabbitmq:
       image: rabbitmq
       build: ./rabbitmq/
-      healthcheck:
-        test: curl -f http://localhost:15672
       ports:
         - "5672:5672"
         - "15672:15672"
 
-  web:
-    build: .
-    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; uvicorn api_fast:foo_app --port 9999 --reload'
-    volumes:
-      - .:/app
+  fastapi:
+    build: ./fastapi_consumer/
     ports:
-      - "9999:9999"
+      - "8001:8001"
     environment:
+      - HOST_FROM=my-rabbitmq
+      - PORT_FROM=5672
+      - QUEUE_NAME=test1
       - DATABASE_URL=postgresql://fastapi:fastapi@db:5432/fastapi
-    depends_on:
-      - db
   db:
     image: postgres:13-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=fastapi
       - POSTGRES_PASSWORD=fastapi
       - POSTGRES_DB=fastapi
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8080:8080"
 
 
 

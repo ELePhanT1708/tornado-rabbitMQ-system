@@ -10,7 +10,7 @@ class Request(Base):
     surname = Column(String)
     name = Column(String)
     parent = Column(String, default=True)
-    phone = Column(Integer)
+    phone = Column(String)
     request_body = Column(Text)
 
     def __str__(self):

@@ -1,7 +1,6 @@
 from typing import List
 
-from fastapi import Depends
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
 
 import models
 import schemas
@@ -23,7 +22,7 @@ def get_request_by_id(db: Session, request_id: int) -> models.Request:
 
 
 def get_requests_by_phone(db: Session, phone: str) -> List[models.Request]:
-    return db.query(models.Request).filter(models.Request.email == phone).all()
+    return db.query(models.Request).filter(models.Request.phone == phone).all()
 
 
 def get_requests(db: Session, skip: int = 0, limit: int = 100) -> List[models.Request]:

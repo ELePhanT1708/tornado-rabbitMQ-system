@@ -12,7 +12,7 @@ def parse_arguments(args):
     surname: str = args[0]
     name: str = args[1]
     parent: str = args[2]
-    phone: int = int(args[3])
+    phone: str = args[3]
     body: str = args[4]
     return dict({
         'surname': surname,
