@@ -15,5 +15,13 @@ services:
       ports:
         - "5672:5672"
         - "15672:15672"
+#  fastapi:
+#    image: fastapi
+#    build: ./fastapi_consumer/
+#    ports:
+#      - "9999:9999"
+#    links:
+#      - my-rabbitmq
+
 
 
