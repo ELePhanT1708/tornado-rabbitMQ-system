@@ -1,14 +1,14 @@
-import tornado.ioloop
+import tornado
 import tornado.web
 import os
 import uuid
 from tornado.options import define, options
+from send import send_message_to_rabbit
+
+define("port", default=81, help="run on the given port", type=int)
 
 
-define("port", default=8887, help="run on the given port", type=int)
-
-
-def requestModel(args):
+def parse_arguments(args):
     surname: str = args[0]
     name: str = args[1]
     parent: str = args[2]
@@ -23,7 +23,6 @@ def requestModel(args):
     })
 
 
-
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
@@ -31,7 +30,7 @@ class Application(tornado.web.Application):
             (r"/form", FormHandler),
         ]
         settings = dict(
-            title=u"Tornado Forms",
+            title=u" Обращение ",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             xsrf_cookies=True,
@@ -53,11 +52,16 @@ class FormHandler(tornado.web.RequestHandler):
         parent = self.get_argument("otchestvo", strip=False)
         phone = self.get_argument("phone", strip=False)
         request_body = self.get_argument("question", strip=False)
-        req = requestModel([surname, name, parent, phone, request_body])
-        self.render("success.html", request=req)
+        req = parse_arguments([surname, name, parent, phone, request_body])
+        status = send_message_to_rabbit(body=req)
+        if status == 'Success':
+            self.render("success.html", request=req)
+        else:
+            self.render("success.html", request=req)
 
 
 if __name__ == "__main__":
     app = Application()
     app.listen(options.port)
+    print(f"Listening on port: {options.port}")
     tornado.ioloop.IOLoop.current().start()

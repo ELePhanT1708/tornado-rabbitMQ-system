@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  backend:
+    image: tornado
+    build: ./backend/
+    ports:
+      - "81:81"
+    restart: always
+    depends_on:
+        - my-rabbitmq
+  my-rabbitmq:
+      image: rabbitmq
+      build: ./rabbitmq/
+      ports:
+        - "5672:5672"
+        - "15672:15672"
+
+
