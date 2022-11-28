@@ -1,62 +1,35 @@
 # tornado-rabbitMQ-system
 
-Создать систему регистрации обращений.
-Система должна состоять из следующих элементов:
-- фронтенд
-- бэкэнд
-- сервис очередей
-- сервис записи в базу данных
-- база данных
+# System to register request from people
+### My realization
 
-Описание элемента "фронтенд":
+#### Project structure
+--__project root__
+---_backend_ ( tornado with _few_ html page with __form__ for input information and move to rabbitmq)
+---_rabbitmq_
+---_fastapi_consumer_ (api for listening messages from rabbitMQ queue and save data to postgresql)
+---_docker-compose.yml_ (file for deploying with containers)
+---_venv_ (not useful , only for developing stage )
 
-Страница приема обращения гражданина, обязательные элементы:
-- поле Фамилия (тип текст)
-- поле Имя (тип текст)
-- поле Отчество (тип текст)
-- поле Телефон (тип телефон, для упрощения цифры)
-- поле Обращение (тип большой текст)
-- кнопка "Отправить" (инициализируется отправку данных на бэкенд)
-Реализация: html, js(jQuery) или что-то максимально простое, формирование json(или другого представления данных)
-и отправдка на бэкенд.
-
-Описание элемента "бэкенд":
-
-Сервис реализующий функционал приема данных от фронтенда, формирование объекта и отправка
-его в сервис очередей.
-Реализация: python(tornado)
-
-Описание элемента "сервис очередей":
-
-rabbitMQ
-
-Описание элемента "сервис записи в базу данных":
-
-Сервис непрерывно работающий и подключенный к очереди rabbitmq, проверяет наличие там объектов,
-извлекает их, и записывает в базу данных.
-Реализация: python(fastapi)
-
-Описание элемента "база данных":
-
-Любая база данных на выш выбор.
-Таблица или документ должны содержать соответственно поля из пункта "фронтенд".
+# Instruction to launch on containers with Docker
+__Unfortunately__ I couldn't adjust containers to startup with strict order 
+I tried docker compose parameters:__depends_on__ and __link__ , __network_mode__ and etc. , but nothing didn't help .
+And for my realization it became a trouble and I solved it with manually startuping each container by this ___order___ 
+__(don't do step up before container isn't ready)__ : 
+1. db (postgresql)
+2. adminer (localhost:8080) - for monitoring changes in db __for connecting check env variables for db__
+3. my-rabbitmq
+4. backend (tornado)
+5. fastapi 
+---
 
 
-Что в итоге должно получиться:
-Папка с проектом в котором находится файл docker-compose.yml
-=================
-.
-├── frontend/
-├── backend/
-├── rabbitmq/
-├── servicedb/
-├── db/
-└──docker-compose.yml
-=================
-При запуске команды докер компоуз, должно подниматься 5 контейнеров в своем сетевом
-пространстве. Соответственно по url ipfrontend:80 нам должна открываться
-страница приема обращения, а через реквизиты доступа к БД мы должны попасть внутрь и иметь
-возможность просматривать таблицы.
-Также необходимо настроить rabbitmq так чтобы там был managemen-plugin (в принципе он понадобится для отладки)
-и должен быть доступ в консоль раббита с iprabbitmq:15672
-Img для докера брать на основе debian.
+
+And wait  ✨Magic ✨
+
+---
+### To test working: 
+Go to http://localhost:81 (it doesn't want to work on 80 port and I changed it on 81)
+Fill out the form with your values and click button "Отправить"
+And you will can check the information in db , and some info in container's consoles in Dokcer Desktop app.
+
