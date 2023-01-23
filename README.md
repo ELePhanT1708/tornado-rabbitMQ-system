@@ -1,20 +1,19 @@
 # tornado-rabbitMQ-system
 
 # System to register request from people
-### My realization
 
-#### Project structure
---__project root__
+### Project structure
 
----_backend_ ( tornado with _few_ html page with __form__ for input information and move to rabbitmq)
 
----_rabbitmq_
+-- _backend_ ( tornado with _few_ html page with __form__ for input information and move to rabbitmq)
 
----_fastapi_consumer_ (api for listening messages from rabbitMQ queue and save data to postgresql)
+-- _rabbitmq_
 
----_docker-compose.yml_ (file for deploying with containers)
+-- _fastapi_consumer_ (api for listening messages from rabbitMQ queue and save data to postgresql)
 
----_venv_ (not useful , only for developing stage )
+-- _docker-compose.yml_ (file for deploying with containers)
+
+-- _venv_ (not useful , only for developing stage )
 
 
 # Instruction to launch on containers with Docker
