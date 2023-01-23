@@ -1,8 +1,8 @@
 # System to register request from people
 
-## Stack : tornado(as front and back end for creating requests) - rabbbitMQ - fastapi_consumer - postgresql 
+### Stack : tornado(as front and back end for creating requests) - rabbbitMQ - fastapi_consumer - postgresql 
 
-### Project structure
+## Project structure
 
 
 -- _backend_ ( tornado with _few_ html page with __form__ for input information and move to rabbitmq)
